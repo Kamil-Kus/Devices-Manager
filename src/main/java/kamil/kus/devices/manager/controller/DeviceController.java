@@ -31,13 +31,16 @@ public class DeviceController {
     @GetMapping(value = "/list")
     public ResponseEntity<ResponseList> getListOfDevices() {
         List<Device> allDevices = deviceManager.getAllDevices();
-        new ResponseList("All devcies", allDevices);
-        return new ResponseEntity<>(new ResponseList("All devcies", allDevices), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseList("All devcies", transfromToDtoList(allDevices)), HttpStatus.OK);
+    }
+
+    private List<DeviceDto> transfromToDtoList(List<Device> allDevices) {
+        return allDevices.stream().map(Device::toDeviceDto).toList();
     }
 
     @GetMapping(value = "/list/{id}")
     public ResponseEntity<ResponseList> getListOfDevices(@PathVariable Long id) {
         var device = deviceManager.getDeviceById(id);
-        return new ResponseEntity<>(new ResponseList("One device.", Arrays.asList(device)), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseList("One device.", Arrays.asList(device.toDeviceDto())), HttpStatus.OK);
     }
 }
